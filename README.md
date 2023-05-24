@@ -5,6 +5,7 @@
 
 ## Usage:
 
- The file to debug should be named "test.py".
-
 `python error.py`
+
+eg.
+`File to debug: test.py`

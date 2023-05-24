@@ -2,11 +2,12 @@ import subprocess as sb
 import requests
 import os
 import time
-
-# save error message into a file
 from requests import Response
 
-p = sb.Popen(["python", "test.py", "2>", "error.txt"], shell=True)
+debugFile: str = input("File to debug: ")
+
+# save error message into a file
+p = sb.Popen(["python", debugFile, "2>", "error.txt"], shell=True)
 time.sleep(1)
 
 with open("error.txt", "r") as file:
