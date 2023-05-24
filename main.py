@@ -1,72 +1,46 @@
 import subprocess as sb
 import requests
 import os
+import time
 
-# s1 = sb.Popen(["echo", "\"\"\""], shell=True)
+# save error message into a file
+from requests import Response
+
 p = sb.Popen(["python", "test.py", "2>", "error.txt"], shell=True)
+time.sleep(1)
 
 with open("error.txt", "r") as file:
-    last_line = file.readlines()[-1]
+    lines: list[str] = file.readlines()
+    if len(lines) > 0:
 
-# print(last_line)
+        last_line: str = lines[-1]
+        print(last_line)
 
-# api-endpoint
-URL = "https://api.stackexchange.com/2.3/search?site=stackoverflow"
+        # api-endpoint
+        URL = "https://api.stackexchange.com/2.3/search?site=stackoverflow"
 
-# location given here
-# location = "delhi technological university"
+        # defining a params dict for the parameters to be sent to the API
+        PARAMS = {'order': "desc",
+                  "sort": "votes",
+                  "intitle": last_line,
+                  "tagged": "python"}
 
-# defining a params dict for the parameters to be sent to the API
-PARAMS = {'order': "desc",
-          "sort": "votes",
-          "intitle": last_line,
-          "tagged": "python"}
+        # sending get request and saving the response as response object
+        r: Response = requests.get(url=URL, params=PARAMS)
 
-# sending get request and saving the response as response object
-r = requests.get(url=URL, params=PARAMS)
+        # max number of links to display
+        nLinks: int = 5
 
-nLinks = 5
+        # convert response to JSON
+        data = r.json()
 
-# print(r.json())
+        i = 0
+        for item in data['items']:
+            if i < nLinks:
+                print(item['link'])
+                i += 1
 
-data = r.json()
-i = 0
-for item in data['items']:
-    if i < nLinks:
-        print(item['link'])
-        i += 1
+    else:
+        print("No errors found")
 
 os.remove("error.txt")
-"""
-file = open("error.txt", "r")
-li = file.readlines()
-#print(li[len(li) - 1])
-
-import re
-thelist = li # ['','"0=SYSEV,1=APPEV,2:3=VECEV"','"ASEN"+$y','"FALSE"','0x0000FFFF']
-
-newlist = []
-
-for item in thelist:
-    newlist.append(re.sub('["]','',item))
-
-print(newlist)
-print(newlist[len(li) - 1])
-
-
-
-_, err = p.communicate()
-
-msg = err.decode()
-
-if len(msg) == 0:
-    print("No errors found")
-
-else:
-    print(f"{err}\n{msg}")
-
-# print(f"{len(err)}\n{len(msg)}")
-# output = p.stdout.read()
-
-# print(test)
-"""
