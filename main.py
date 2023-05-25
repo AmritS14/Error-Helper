@@ -1,8 +1,7 @@
 import subprocess as sb
-import requests
 import os
 import time
-from requests import Response
+from requests import Response, get
 
 debugFile: str = input("File to debug: ")
 
@@ -27,7 +26,7 @@ with open("error.txt", "r") as file:
                   "tagged": "python"}
 
         # sending get request and saving the response as response object
-        r: Response = requests.get(url=URL, params=PARAMS)
+        r: Response = get(url=URL, params=PARAMS)
 
         # max number of links to display
         nLinks: int = 5
